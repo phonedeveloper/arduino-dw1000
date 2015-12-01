@@ -18,8 +18,6 @@
  * Arduino driver library (source file) for the Decawave DW1000 UWB transceiver IC.
  */
 
-#include "digitalWriteFast.h"
-#include "pins_arduino.h"
 #include "DW1000.h"
 
 DW1000Class DW1000;

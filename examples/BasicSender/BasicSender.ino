@@ -22,21 +22,23 @@
 #include <SPI.h>
 #include <DW1000.h>
 
+#define RST 2
+#define IRQ_PIN 9
+
 // DEBUG packet sent status and count
 boolean sent = false;
 volatile boolean sentAck = false;
 volatile unsigned long delaySent = 0;
 int sentNum = 0;
 DW1000Time sentTime;
-// reset line to the chip
-int RST = 9;
 
 void setup() {
   // DEBUG monitoring
   Serial.begin(9600);
+  while(!Serial);
   Serial.println("### DW1000-arduino-sender-test ###");
   // initialize the driver
-  DW1000.begin(0, RST);
+  DW1000.begin(IRQ_PIN, RST);
   DW1000.select(SS);
   Serial.println("DW1000 initialized ...");
   // general configuration
