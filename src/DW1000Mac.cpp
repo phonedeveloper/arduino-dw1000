@@ -129,6 +129,9 @@ boolean DW1000Mac::decodeShortMACFrame(byte frame[], byte address[]){
     //we grab the destination address for the mac frame
     //byte destinationAddress[2];
     //memcpy(destinationAddress, frame+5, 2);
+	
+	// What is there to return here?
+	return true;
 }
 boolean DW1000Mac::decodeLongMACFrame(byte frame[], byte address[]){
     byte reverseAddress[2];
@@ -137,6 +140,9 @@ boolean DW1000Mac::decodeLongMACFrame(byte frame[], byte address[]){
     //we grab the destination address for the mac frame
     //byte destinationAddress[8];
     //memcpy(destinationAddress, frame+5, 8);
+	
+	// What is there to return here?
+	return true;
 }
 
 

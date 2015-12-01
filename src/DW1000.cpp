@@ -18,6 +18,7 @@
  * Arduino driver library (source file) for the Decawave DW1000 UWB transceiver IC.
  */
 
+//#include "pins_arduino.h"
 #include "DW1000.h"
 
 DW1000Class DW1000;
@@ -136,6 +137,10 @@ void DW1000Class::begin(int irq, int rst) {
 	_rst = rst;
 	_irq = irq;
 	_deviceMode = IDLE_MODE;
+	
+	Serial.print("The IRQ pin is :");
+	Serial.println(_irq, DEC);
+	
 	// attach interrupt
 	attachInterrupt(_irq, DW1000Class::handleInterrupt, RISING);
 }
@@ -598,6 +603,7 @@ void DW1000Class::tune() {
 
 void DW1000Class::handleInterrupt() {
 	// read current status and handle via callbacks
+	Serial.println("ICI Blabla");
 	readSystemEventStatusRegister();
 	if(isClockProblem() /* TODO and others */ && _handleError != 0) {
 		(*_handleError)();
@@ -1218,6 +1224,8 @@ void DW1000Class::correctTimestamp(DW1000Time& timestamp) {
 			rangeBiasLow <<= 1;			
 		} else {
 			// TODO proper error handling
+			rangeBiasHigh = 0;
+			rangeBiasLow = 0;
 		}
 	} else {
 		// 500 MHz receiver bandwidth
@@ -1229,6 +1237,8 @@ void DW1000Class::correctTimestamp(DW1000Time& timestamp) {
 			rangeBiasLow = (rxPowerBaseLow < BIAS_500_64_ZERO ? -BIAS_500_64[rxPowerBaseLow] : BIAS_500_64[rxPowerBaseLow]);		
 		} else {
 			// TODO proper error handling
+			rangeBiasHigh = 0;
+			rangeBiasLow = 0;
 		}
 	}
 	// linear interpolation of bias values
@@ -1417,7 +1427,7 @@ float DW1000Class::getReceivePower() {
  *		The boolean value to be set to the given bit position.
  */
 void DW1000Class::setBit(byte data[], unsigned int n, unsigned int bit, boolean val) {
-	int idx;
+	unsigned int idx;
 	int shift;
 
 	idx = bit / 8;
@@ -1444,7 +1454,7 @@ void DW1000Class::setBit(byte data[], unsigned int n, unsigned int bit, boolean 
  * 		The position of the bit to be checked.
  */
 boolean DW1000Class::getBit(byte data[], unsigned int n, unsigned int bit) {
-	int idx;
+	unsigned int idx;
 	int shift;
 
 	idx = bit / 8;
@@ -1458,7 +1468,7 @@ boolean DW1000Class::getBit(byte data[], unsigned int n, unsigned int bit) {
 }
 
 void DW1000Class::writeValueToBytes(byte data[], long val, unsigned int n) {
-	int i;	
+	unsigned int i;	
 	for(i = 0; i < n; i++) {
 		data[i] = ((val >> (i * 8)) & 0xFF);
 	}
@@ -1475,8 +1485,8 @@ void DW1000Class::writeValueToBytes(byte data[], long val, unsigned int n) {
  */
 void DW1000Class::readBytes(byte cmd, word offset, byte data[], unsigned int n) {
 	byte header[3];
-	int headerLen = 1;
-	int i;
+	unsigned int headerLen = 1;
+	unsigned int i;
 	if(offset == NO_SUB) {
 		header[0] = READ | cmd;
 	} else {
@@ -1538,8 +1548,8 @@ void DW1000Class::readBytesOTP(word address, byte data[]) {
  */
 void DW1000Class::writeBytes(byte cmd, word offset, byte data[], unsigned int n) {
 	byte header[3];
-	int headerLen = 1;
-	int i;
+	unsigned int headerLen = 1;
+	unsigned int i;
 	// TODO proper error handling: address out of bounds
 	if(offset == NO_SUB) {
 		header[0] = WRITE | cmd;
