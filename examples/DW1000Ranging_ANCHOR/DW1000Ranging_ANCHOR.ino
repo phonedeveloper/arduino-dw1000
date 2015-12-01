@@ -2,13 +2,17 @@
 #include <SPI.h> 
 #include "DW1000Ranging.h"
 #include "DW1000Device.h"  
-  
+
+#define RST 2
+#define IRQ_PIN 9
+#define CS 10
 
 void setup() {
   Serial.begin(115200);
+  while(!Serial);
   delay(1000);
   //init the configuration
-  DW1000Ranging.initCommunication(9, 10); //Reset and CS pin  
+  DW1000Ranging.initCommunication(IRQ_PIN, RST, CS); //IRQ, Reset and CS pin  
   //define the sketch as anchor. It will be great to dynamically change the type of module
   DW1000Ranging.attachNewRange(newRange);
   //we start the module as an anchor 

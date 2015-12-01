@@ -37,7 +37,7 @@ void setup() {
   while(!Serial);
   Serial.println("### DW1000-arduino-receiver-test ###");
   // initialize the driver
-  DW1000.begin(IRQ_PIN, RST);
+  DW1000.begin(IRQ_PIN, RST); // IRQ and RESET
   DW1000.select(SS);
   Serial.println("DW1000 initialized ...");
   // general configuration

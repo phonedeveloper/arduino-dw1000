@@ -20,7 +20,7 @@
  */
 
 #include <SPI.h>
-#include <DW1000.h>
+#include "DW1000.h"
 
 #define RST 2
 #define IRQ_PIN 9
@@ -36,9 +36,12 @@ void setup() {
   // DEBUG monitoring
   Serial.begin(9600);
   while(!Serial);
+
+  delay(1000);
+  
   Serial.println("### DW1000-arduino-sender-test ###");
   // initialize the driver
-  DW1000.begin(IRQ_PIN, RST);
+  DW1000.begin(IRQ_PIN, RST); // IRQ and RESET
   DW1000.select(SS);
   Serial.println("DW1000 initialized ...");
   // general configuration
@@ -85,7 +88,8 @@ void transmitter() {
 }
 
 void loop() {
-  if(!sentAck) {
+  if(!sentAck) 
+  {
     return;
   }
   // continue on success confirmation 

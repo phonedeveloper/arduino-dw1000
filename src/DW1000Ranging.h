@@ -39,7 +39,8 @@
 #define MAX_DEVICES 4
 
 //Default Pin for module:
-#define DEFAULT_RST_PIN 9
+#define DEFAULT_IRQ_PIN 9
+#define DEFAULT_RST_PIN 2
 #define DEFAULT_SPI_SS_PIN 10
 
 //Default value
@@ -70,7 +71,7 @@ class DW1000RangingClass {
     
     
     //initialisation
-    static void initCommunication(unsigned int myRST=DEFAULT_RST_PIN, unsigned int mySS=DEFAULT_SPI_SS_PIN);
+    static void initCommunication(unsigned int myIRQ=DEFAULT_IRQ_PIN, unsigned int myRST=DEFAULT_RST_PIN, unsigned int mySS=DEFAULT_SPI_SS_PIN);
     static void configureNetwork(unsigned int deviceAddress, unsigned int networkId, const byte mode[]); 
     static void generalStart();
     static void startAsAnchor(char address[], const byte mode[]);

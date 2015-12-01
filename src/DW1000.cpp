@@ -130,6 +130,10 @@ void DW1000Class::begin(int irq) {
 void DW1000Class::begin(int irq, int rst) {
 	// generous initial init/wake-up-idle delay
 	delay(5);
+	// Configure the IRQ pin as INPUT
+	pinMode(irq, INPUT);
+	// Configure the RESET pin as OUTPUT
+	pinMode(rst, OUTPUT);
 	// start SPI
  	SPI.begin(); 
 	SPI.usingInterrupt(irq);
@@ -137,9 +141,6 @@ void DW1000Class::begin(int irq, int rst) {
 	_rst = rst;
 	_irq = irq;
 	_deviceMode = IDLE_MODE;
-	
-	Serial.print("The IRQ pin is :");
-	Serial.println(_irq, DEC);
 	
 	// attach interrupt
 	attachInterrupt(_irq, DW1000Class::handleInterrupt, RISING);
@@ -603,7 +604,6 @@ void DW1000Class::tune() {
 
 void DW1000Class::handleInterrupt() {
 	// read current status and handle via callbacks
-	Serial.println("ICI Blabla");
 	readSystemEventStatusRegister();
 	if(isClockProblem() /* TODO and others */ && _handleError != 0) {
 		(*_handleError)();

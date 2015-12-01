@@ -74,7 +74,7 @@ void (*DW1000RangingClass::_handleNewRange)(void) = 0;
  * #### Init and end #######################################################
  * ######################################################################### */
 
-void DW1000RangingClass::initCommunication(unsigned int myRST, unsigned int mySS){
+void DW1000RangingClass::initCommunication(unsigned int myIRQ, unsigned int myRST, unsigned int mySS){
     // reset line to the chip
     _RST = myRST;
     _SS = mySS;
@@ -85,7 +85,7 @@ void DW1000RangingClass::initCommunication(unsigned int myRST, unsigned int mySS
     _timerDelay = DEFAULT_TIMER_DELAY;
     
     
-    DW1000.begin(0, myRST);
+    DW1000.begin(myIRQ, myRST);
     DW1000.select(mySS);
 }
  
@@ -349,13 +349,17 @@ short DW1000RangingClass::detectMessageType(byte datas[]){
         //we have a short mac frame message (poll, range, range report, etc..)
         return datas[SHORT_MAC_LEN];
     }  
+	else
+	{
+		return 0;
+	}
 }
 
 void DW1000RangingClass::loop(){
     //we check if needed to reset !
     checkForReset();
     long time=millis(); 
-    if(time-timer>_timerDelay){
+    if((unsigned int)(time-timer)>_timerDelay){
         timer=time;
         timerTick();
     }
