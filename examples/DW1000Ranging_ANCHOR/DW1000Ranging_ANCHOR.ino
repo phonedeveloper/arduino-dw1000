@@ -16,7 +16,7 @@ void setup() {
   //define the sketch as anchor. It will be great to dynamically change the type of module
   DW1000Ranging.attachNewRange(newRange);
   //we start the module as an anchor 
-  DW1000Ranging.startAsAnchor("82:17:5B:D5:A9:9A:E2:9C", DW1000.MODE_LONGDATA_RANGE_ACCURACY); 
+  DW1000Ranging.startAsAnchor((char*) "82:17:5B:D5:A9:9A:E2:9C", DW1000.MODE_LONGDATA_RANGE_ACCURACY); 
 }
 
 void loop() { 
