@@ -257,7 +257,7 @@ void DW1000Class::tune() {
 	byte tcpgdelay[LEN_TC_PGDELAY];
 	byte fspllcfg[LEN_FS_PLLCFG];
 	byte fsplltune[LEN_FS_PLLTUNE];
-	byte fsxtalt[LEN_FS_XTALT];
+	// byte fsxtalt[LEN_FS_XTALT];
 	// AGC_TUNE1
 	if(_pulseFrequency == TX_PULSE_FREQ_16MHZ) {
 		writeValueToBytes(agctune1, 0x8870, LEN_AGC_TUNE1);
