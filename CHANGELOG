@@ -1,0 +1,9 @@
+2015-12-12 Updated examples/BasicConnectivityTest:
+           - reduce message buffer to prevent crashes on 2K RAM devices
+           - created constants for easy settings changes
+           - brought out settings for RESET and INTERRUPT pins since these 
+             can differ depending on what platform the module is built for
+           - moved delays around and added a delay constant to easily change
+             polling rate when debugging
+2015-12-12 Merged https://github.com/paulerolland/arduino-dw1000 to pick up Teensy-LC updates (THX!)
+2015-12-12 Cloned https://github.com/thotro/arduino-dw1000 (THX!)
