@@ -28,9 +28,9 @@
  * working.  If you are seeing all 'FF's for values, your module 
  * probably is not talking to your Arduino.
  *
- * You can change the DEVICE_ADDRESS or NETWORK_ID constants (below) 
- * and reload the sketch to confirm if the device is able to be written
- * to and read from.
+ * You can change the DEVICE_ADDRESS, NETWORK_ID, and/or
+ * EXTENDED_UNIQUE_IDENTIFIER constants (below) and reload the sketch 
+ * to confirm if the device is able to be written to and read from.
  *
  * Other constants that appear above setup() can also be adjusted for
  * your needs.
@@ -45,6 +45,7 @@ const static int INTERRUPT_PIN = 2;
 
 // If you are unsure that you are talking to your module, change the 
 // values below and verify that they change after you reload the sketch.
+const static char* EXTENDED_UNIQUE_IDENTIFIER = "01.02.03.04.05.06.07.08";
 const static int DEVICE_ADDRESS = 5;
 const static int NETWORK_ID     = 10;
 
@@ -63,6 +64,10 @@ void setup() {
   // DEBUG monitoring
   Serial.begin(9600);
   
+  // Give things time to settle so that the following serial statements
+  // appear in an open Arduino IDE serial monitor window.
+  delay(1000);
+  
   // Remind user about RST and INT pin settings
   Serial.print(F("Sketch configured for DWM1000 RST on Arduino pin "));
   Serial.print(RESET_PIN);
@@ -72,8 +77,12 @@ void setup() {
   
   // initialize the driver
   DW1000.begin(INTERRUPT_PIN, RESET_PIN);
+  delay(1000);
   DW1000.select(SS);
   Serial.println(F("DW1000 initialized ..."));
+
+  // set the extended unique identifier
+  DW1000.setEUI((char*) EXTENDED_UNIQUE_IDENTIFIER);
 
   // general configuration
   DW1000.newConfiguration(); 
