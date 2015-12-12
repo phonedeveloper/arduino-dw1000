@@ -17,42 +17,97 @@
  * @file BasicConnectivityTest.ino
  * Use this to test connectivity with your DW1000 from Arduino.
  * It performs an arbitrary setup of the chip and prints some information.
+ * 
+ * Please change RESET_PIN and INTERRUPT_PIN constant values (below) to
+ * reflect the pin number on your Arduino to which the DW1000/DWM1000's
+ * RST and INT lines are connected, respectively.
+ *
+ * PLEASE NOTE: OUTPUT DOESN'T NECESSARILY MEAN IT IS WORKING
+ * The sketch produces a lot of formatted output whether or not the
+ * device is connected/working and doesn't generate an error if not
+ * working.  If you are seeing all 'FF's for values, your module 
+ * probably is not talking to your Arduino.
+ *
+ * You can change the DEVICE_ADDRESS or NETWORK_ID constants (below) 
+ * and reload the sketch to confirm if the device is able to be written
+ * to and read from.
+ *
+ * Other constants that appear above setup() can also be adjusted for
+ * your needs.
  */
 
 #include <SPI.h>
 #include <DW1000.h>
 
-// reset line to the chip
-int RST = 9;
+// Set the Arduino pins that your DWM1000's RST and INT are connected to.
+const static int RESET_PIN     = 9;
+const static int INTERRUPT_PIN = 2;
 
+// If you are unsure that you are talking to your module, change the 
+// values below and verify that they change after you reload the sketch.
+const static int DEVICE_ADDRESS = 5;
+const static int NETWORK_ID     = 10;
+
+// The size of the buffer to hold a message returned by the library. If
+// too large, it will consume all the memory available and produce 
+// unpredictable results. If too small, the library will overwrite it and
+// produce unpredictable results.
+const static int MAX_MESSAGE_SIZE = 128;
+
+// Determines how frequently the sketch will poll for status from the 
+// device. This can be reduced to as little as one second (1000) or less
+// if you are troubleshooting, say, serial communications.
+const static int POLL_DELAY = 10000;    // in milliseconds
+ 
 void setup() {
   // DEBUG monitoring
   Serial.begin(9600);
+  
+  // Remind user about RST and INT pin settings
+  Serial.print(F("Sketch configured for DWM1000 RST on Arduino pin "));
+  Serial.print(RESET_PIN);
+  Serial.print(F(" and INT on pin "));
+  Serial.print(INTERRUPT_PIN);
+  Serial.println(F("."));
+  
   // initialize the driver
-  DW1000.begin(0, RST);
+  DW1000.begin(INTERRUPT_PIN, RESET_PIN);
   DW1000.select(SS);
-  Serial.println("DW1000 initialized ...");
+  Serial.println(F("DW1000 initialized ..."));
+
   // general configuration
   DW1000.newConfiguration(); 
-  DW1000.setDeviceAddress(5);
-  DW1000.setNetworkId(10);
+  DW1000.setDeviceAddress(DEVICE_ADDRESS);
+  DW1000.setNetworkId(NETWORK_ID);
   DW1000.commitConfiguration();
-  Serial.println("Committed configuration ...");
+  Serial.println(F("Committed configuration ..."));
+
+  // wait a bit
+  delay(1000);
 }
 
 void loop() {
-    // wait a bit
-    delay(1000);
-    // DEBUG chip info and registers pretty printed
-    char msg[1024];
-    DW1000.getPrintableDeviceIdentifier(msg);
-    Serial.print("Device ID: "); Serial.println(msg);
-    DW1000.getPrintableExtendedUniqueIdentifier(msg);
-    Serial.print("Unique ID: "); Serial.println(msg);
-    DW1000.getPrintableNetworkIdAndShortAddress(msg);
-    Serial.print("Network ID & Device Address: "); Serial.println(msg);
-    DW1000.getPrintableDeviceMode(msg); 
-    Serial.print("Device mode: "); Serial.println(msg);
-    // wait a bit
-    delay(10000);
+  // DEBUG chip info and registers pretty printed
+  char msg[MAX_MESSAGE_SIZE];
+
+  Serial.println();
+
+  // Ensures initial Serial.println() statements are displayed in
+  // an open Arduino IDE serial monitor window when the sketch is loaded.
+  delay(1000);
+  
+  DW1000.getPrintableDeviceIdentifier(msg);
+  Serial.print(F("Device ID: ")); Serial.println(msg);
+
+  DW1000.getPrintableExtendedUniqueIdentifier(msg);
+  Serial.print(F("Unique ID: ")); Serial.println(msg);
+
+  DW1000.getPrintableNetworkIdAndShortAddress(msg);
+  Serial.print(F("Network ID & Device Address: ")); Serial.println(msg);
+
+  DW1000.getPrintableDeviceMode(msg); 
+  Serial.print(F("Device mode: ")); Serial.println(msg);
+
+  // wait a bit
+  delay(POLL_DELAY);
 }
